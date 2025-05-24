@@ -71,4 +71,31 @@ plt.show()
 ####### B 작업자 작업 수행 #######
 
 ''' 코드 작성 바랍니다 '''
+param_grid = {
+    'max_depth': [3, 5, 7, 9, 15],
+    'learning_rate': [0.1, 0.01, 0.001],
+    'n_estimators': [50, 100, 200, 300]
+}
 
+from xgboost import XGBClassifier
+xgb = XGBClassifier()
+grid_search = GridSearchCV(xgb, param_grid, cv=5, scoring='accuracy')
+grid_search.fit(X_train, y_train)
+
+best_params = grid_search.best_params_
+print("Best parameters:", best_params)
+best_score = grid_search.best_score_
+print("Best accuracy:", best_score)
+
+xgb_best = grid_search.best_estimator_
+importances = xgb_best.feature_importances_
+features = X.columns
+
+plt.figure(figsize=(15,6))
+plt.title('Feature Importance')
+plt.bar(features, importances, width=0.4)
+plt.xticks(rotation=45)
+plt.xlabel("Feature")
+plt.ylabel("importance")
+plt.tight_layout()
+plt.show()
